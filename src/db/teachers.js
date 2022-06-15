@@ -3,7 +3,7 @@ const { getConnection } = require('../clientDb')
 const getAll = async () => {
     const client = getConnection()
     try {
-        const result = await client.query('SELECT * FROM account')
+        const result = await client.query('SELECT * FROM teachers')
         return result.rows
     } catch (error) {
         throw new Error(error)
@@ -19,7 +19,7 @@ const getById = async (id) => {
     const client = getConnection()
     try {
         const query = {
-            text: 'SELECT * FROM account WHERE id = $1',
+            text: 'SELECT * FROM teachers WHERE id = $1',
             values: [id]
         }
         const result = await client.query(query)
@@ -29,12 +29,12 @@ const getById = async (id) => {
     }
 }
 
-const getByUsername = async (username) => {
+const getByNameAndLastName = async (name, lastName) => {
     const client = getConnection()
     try {
         const query = {
-            text: 'SELECT * FROM account WHERE username = $1',
-            values: [username]
+            text: 'SELECT * FROM teachers WHERE name = $1 AND last_name = $2',
+            values: [name, lastName]
         }
         const result = await client.query(query)
         return result.rows[0]
@@ -47,7 +47,7 @@ const deleteById = async (id) => {
     const client = getConnection()
     try {
         const query = {
-            text: 'DELETE FROM account WHERE id = $1 RETURNING *',
+            text: 'DELETE FROM teachers WHERE id = $1 RETURNING *',
             values: [id]
         }
         const result = await client.query(query)
@@ -57,12 +57,12 @@ const deleteById = async (id) => {
     }
 }
 
-const create = async (user) => {
+const create = async (teacher) => {
     const client = getConnection()
     try {
         const query = {
-            text: 'INSERT INTO account (username, email, password) VALUES ($1, $2, $3) RETURNING *',
-            values: [user.username, user.email, user.password]
+            text: 'INSERT INTO teachers (name, profession, last_name) VALUES ($1, $2, $3) RETURNING *',
+            values: [teacher.name, teacher.profession, teacher.last_name]
         }
         const result = await client.query(query)
         return result.rows[0]
@@ -71,12 +71,12 @@ const create = async (user) => {
     }
 }
 
-const update = async (id, user) => {
+const update = async (id, teacher) => {
     const client = getConnection()
     try {
         const query = {
-            text: 'UPDATE account SET username = $1, email = $2, password = $3 WHERE id = $4 RETURNING *',
-            values: [user.username, user.email, user.password, id]
+            text: 'UPDATE teachers SET name = $1, last_name = $2, profession = $3 WHERE id = $4 RETURNING *',
+            values: [teacher.name, teacher.last_name, teacher.profession, id]
         }
         const result = await client.query(query)
         return result.rows[0]
@@ -90,6 +90,6 @@ module.exports = {
     getById,
     deleteById,
     create,
-    getByUsername,
+    getByNameAndLastName,
     update
 }

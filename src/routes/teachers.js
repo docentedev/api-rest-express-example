@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
-const { getAll, getById, deleteById, create, getByName, update } = require('../db/courses')
+const { getAll, getById, deleteById, create, getByNameAndLastName, update } = require('../db/teachers')
 
 router.get('/', async (req, res) => {
     try {
-        const courses = await getAll()
-        res.send(courses)
+        const teachers = await getAll()
+        res.send(teachers)
     } catch (error) {
         res.status(500).send(error)
     }
@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const course = await getById(req.params.id)
-        if (course) res.send(course)
+        const teacher = await getById(req.params.id)
+        if (teacher) res.send(teacher)
         else res.sendStatus(404)
     } catch (error) {
         res.status(500).send(error)
@@ -24,14 +24,14 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const prevCourse = await getByName(req.body.name)
-        if (prevCourse) {
+        const prevTeacher = await getByNameAndLastName(req.body.name, req.body.last_name)
+        if (prevTeacher) {
             res.status(400).send({
-                error: 'Name already exists'
+                error: 'Teacher already exists'
             })
         } else {
-            const course = await create(req.body)
-            res.send(course)
+            const teacher = await create(req.body)
+            res.send(teacher)
         }
     } catch (error) {
         res.status(500).send(error)
@@ -40,8 +40,8 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const course = await deleteById(req.params.id)
-        if (course) res.send(course)
+        const teacher = await deleteById(req.params.id)
+        if (teacher) res.send(teacher)
         else res.sendStatus(404)
     } catch (error) {
         res.status(500).send(error)
@@ -50,8 +50,8 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
-        const course = await update(req.params.id, req.body)
-        if (course) res.send(course)
+        const teacher = await update(req.params.id, req.body)
+        if (teacher) res.send(teacher)
         else res.sendStatus(404)
     } catch (error) {
         res.status(500).send(error)
